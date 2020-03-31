@@ -1,0 +1,9 @@
+ray[debug]
+modin
+tensorflow
+gym
+scipy
+opencv-python
+bokeh
+ipywidgets==6.0.0
+keras
