@@ -16,3 +16,7 @@ provider:
 # How Ray will authenticate with newly launched nodes.
 auth:
     ssh_user: ubuntu
+
+setup_commands:
+    # Install nightly Ray wheels.
+    - pip install ray[all] torch torchvision
