@@ -19,4 +19,4 @@ auth:
 
 setup_commands:
     # Install nightly Ray wheels.
-    - pip install ray[all]
+    - pip install ray[all] joblib
