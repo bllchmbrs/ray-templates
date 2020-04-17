@@ -21,24 +21,6 @@ initial_workers: 2
 #   initial_workers.
 autoscaling_mode: default
 
-# This executes all commands on all nodes in the docker container,
-# and opens all the necessary ports to support the Ray cluster.
-# Empty string means disabled.
-docker:
-    image: "" # e.g., tensorflow/tensorflow:1.5.0-py3
-    container_name: "" # e.g. ray_docker
-    # If true, pulls latest version of image. Otherwise, `docker run` will only pull the image
-    # if no cached version is present.
-    pull_before_run: True
-    run_options: []  # Extra options to pass into "docker run"
-
-    # Example of running a GPU head with CPU workers
-    # head_image: "tensorflow/tensorflow:1.13.1-py3"
-    # head_run_options:
-    #     - --runtime=nvidia
-
-    # worker_image: "ubuntu:18.04"
-    # worker_run_options: []
 
 # The autoscaler will scale up the cluster to this target fraction of resource
 # usage. For example, if a cluster of 10 nodes is 100% busy and
@@ -99,40 +81,8 @@ worker_nodes:
     InstanceMarketOptions:
         MarketType: spot
 
-
-
-# Files or directories to copy to the head and worker nodes. The format is a
-# dictionary from REMOTE_PATH: LOCAL_PATH, e.g.
-file_mounts: {
-#    "/path1/on/remote/machine": "/path1/on/local/machine",
-#    "/path2/on/remote/machine": "/path2/on/local/machine",
-}
-
-# List of commands that will be run before `setup_commands`. If docker is
-# enabled, these commands will run outside the container and before docker
-# is setup.
-initialization_commands: []
-
 # List of shell commands to run to set up nodes.
 setup_commands:
     - echo 'export PATH="$HOME/anaconda3/envs/tensorflow_p36/bin:$PATH"' >> ~/.bashrc
     - pip install -U https://s3-us-west-2.amazonaws.com/ray-wheels/latest/ray-0.9.0.dev0-cp36-cp36m-manylinux1_x86_64.whl
     - pip install ray[dashboard] ray[debug]
-
-
-# Custom commands that will be run on the head node after common setup.
-head_setup_commands:
-    - pip install boto3==1.4.8  # 1.4.8 adds InstanceMarketOptions
-
-# Custom commands that will be run on worker nodes after common setup.
-worker_setup_commands: []
-
-# Command to start ray on the head node. You don't need to change this.
-head_start_ray_commands:
-    - ray stop
-    - ulimit -n 65536; ray start --head --redis-port=6379 --object-manager-port=8076 --autoscaling-config=~/ray_bootstrap_config.yaml --object-store-memory=21474836480
-
-# Command to start ray on worker nodes. You don't need to change this.
-worker_start_ray_commands:
-    - ray stop
-    - ulimit -n 65536; ray start --address=$RAY_HEAD_IP:6379 --object-manager-port=8076 --object-store-memory=21474836480
