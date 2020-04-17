@@ -17,6 +17,25 @@ provider:
 auth:
     ssh_user: ubuntu
 
+head_node:
+    InstanceType: m5.xlarge
+    ImageId: ami-05931d11d2bf831c3 # Deep Learning AMI (Ubuntu) Version 24.3
+
+    BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+              VolumeSize: 100
+worker_nodes:
+    InstanceType: m5.xlarge
+    ImageId: ami-05931d11d2bf831c3 # Deep Learning AMI (Ubuntu) Version 24.3
+
+    BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+              VolumeSize: 100
+    InstanceMarketOptions:
+        MarketType: spot
+
 setup_commands:
     # Install nightly Ray wheels.
     - pip install ray[all] joblib
