@@ -20,3 +20,12 @@ auth:
 setup_commands:
     # Install nightly Ray wheels.
     - pip install ray[all] joblib
+# Command to start ray on the head node. You don't need to change this.
+head_start_ray_commands:
+    - ray stop
+    - ulimit -n 65536; ray start --head --redis-port=6379 --object-manager-port=8076 --autoscaling-config=~/ray_bootstrap_config.yaml --object-store-memory=21474836480
+
+# Command to start ray on worker nodes. You don't need to change this.
+worker_start_ray_commands:
+    - ray stop
+    - ulimit -n 65536; ray start --address=$RAY_HEAD_IP:6379 --object-manager-port=8076 --object-store-memory=21474836480
